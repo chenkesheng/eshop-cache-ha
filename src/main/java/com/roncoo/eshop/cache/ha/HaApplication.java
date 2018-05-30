@@ -15,10 +15,10 @@ public class HaApplication {
         SpringApplication.run(HaApplication.class, args);
     }
 
-//    @Bean
-//    public FilterRegistrationBean indexFilterRegistration() {
-//        FilterRegistrationBean registration = new FilterRegistrationBean(new HystrixRequestContextFilter());
-//        registration.addUrlPatterns("/*");
-//        return registration;
-//    }
+    @Bean
+    public FilterRegistrationBean indexFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean(new HystrixRequestContextFilter());
+        registration.addUrlPatterns("/*");
+        return registration;
+    }
 }

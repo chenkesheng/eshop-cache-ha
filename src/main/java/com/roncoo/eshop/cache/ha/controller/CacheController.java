@@ -3,15 +3,16 @@ package com.roncoo.eshop.cache.ha.controller;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixObservableCommand;
 import com.roncoo.eshop.cache.ha.http.HttpClientUtils;
-import com.roncoo.eshop.cache.ha.hystrix.command.GetBrandNameCommand;
-import com.roncoo.eshop.cache.ha.hystrix.command.GetCityNameCommand;
-import com.roncoo.eshop.cache.ha.hystrix.command.GetProductInfoCommand;
-import com.roncoo.eshop.cache.ha.hystrix.command.GetProductInfosCommand;
+import com.roncoo.eshop.cache.ha.hystrix.command.*;
 import com.roncoo.eshop.cache.ha.model.ProductInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rx.Observable;
 import rx.Observer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @Author: cks
@@ -96,11 +97,26 @@ public class CacheController {
 //
 //        });
 
-        for (String productId : productIds.split(",")) {
-            GetProductInfoCommand getProductInfoCommand = new GetProductInfoCommand(Long.valueOf(productId));
-            ProductInfo productInfo = getProductInfoCommand.execute();
-            System.out.println(productInfo);
-            System.out.println(getProductInfoCommand.isResponseFromCache());
+//        for (String productId : productIds.split(",")) {
+//            GetProductInfoCommand getProductInfoCommand = new GetProductInfoCommand(Long.valueOf(productId));
+//            ProductInfo productInfo = getProductInfoCommand.execute();
+//            System.out.println(productInfo);
+//            System.out.println(getProductInfoCommand.isResponseFromCache());
+//        }
+        List<Future<ProductInfo>> futures = new ArrayList<>();
+
+        for(String productId : productIds.split(",")) {
+            GetProductInfosCollapser getProductInfosCollapser =
+                    new GetProductInfosCollapser(Long.valueOf(productId));
+            futures.add(getProductInfosCollapser.queue());
+        }
+
+        try {
+            for(Future<ProductInfo> future : futures) {
+                System.out.println("CacheController的结果：" + future.get());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return "success";
     }
