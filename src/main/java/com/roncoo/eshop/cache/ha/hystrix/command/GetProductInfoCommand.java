@@ -24,21 +24,24 @@ public class GetProductInfoCommand extends HystrixCommand<ProductInfo> {
     private Long productId;
 
     public GetProductInfoCommand(Long productId) {
-//        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ProductInfoService"))
-//                .andCommandKey(KEY)
-//                .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("GetProductInfoPool"))
-//                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
-//                        .withCoreSize(10)//设置线程池大小
-//                        .withMaxQueueSize(12)//设置的是等待缓冲队列的大小
-//                        .withQueueSizeRejectionThreshold(15))
-//                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-//                        .withCircuitBreakerRequestVolumeThreshold(30)
-//                        .withCircuitBreakerErrorThresholdPercentage(40)
-//                        .withCircuitBreakerSleepWindowInMilliseconds(3000)
-//                        .withExecutionTimeoutInMilliseconds(200)
-//                        .withFallbackIsolationSemaphoreMaxConcurrentRequests(30))
-//        );
-        super(HystrixCommandGroupKey.Factory.asKey("ProductInfoService"));
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ProductInfoService"))
+                .andCommandKey(KEY)
+                .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("GetProductInfoPool"))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
+                        .withCoreSize(10)//设置线程池大小
+                        .withMaximumSize(30)//可以线程池扩容最大线程大小
+                        .withAllowMaximumSizeToDivergeFromCoreSize(true)//允许扩容到30个线程
+                        .withKeepAliveTimeMinutes(1)//线程空闲1分钟就给释放了
+                        .withMaxQueueSize(12)//设置的是等待缓冲队列的大小
+                        .withQueueSizeRejectionThreshold(15))
+                .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
+                        .withCircuitBreakerRequestVolumeThreshold(30)
+                        .withCircuitBreakerErrorThresholdPercentage(40)
+                        .withCircuitBreakerSleepWindowInMilliseconds(3000)
+                        .withExecutionTimeoutInMilliseconds(200)
+                        .withFallbackIsolationSemaphoreMaxConcurrentRequests(30))
+        );
+//        super(HystrixCommandGroupKey.Factory.asKey("ProductInfoService"));
         this.productId = productId;
     }
 

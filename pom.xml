@@ -78,6 +78,12 @@
             <artifactId>hystrix-core</artifactId>
             <version>1.5.12</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-metrics-event-stream -->
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-metrics-event-stream</artifactId>
+            <version>1.5.12</version>
+        </dependency>
 
 
         <!--<dependency>-->
